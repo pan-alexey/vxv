@@ -1,0 +1,22 @@
+{
+  "name": "vxv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pan-alexey/vxv.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pan-alexey/vxv/issues"
+  },
+  "homepage": "https://github.com/pan-alexey/vxv#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
