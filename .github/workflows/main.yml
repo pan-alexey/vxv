@@ -3,17 +3,19 @@ name: Node CI
 on: push
 
 jobs:
-  build_rund:
+  build:
     runs-on: [self-hosted, linux, ARM64]
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-    - name: Install, build, test
-      run: |
-        npm install
-        npm start
-      env:
-        CI: true
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install and start
+        run: npm ci
+      - run: npm run start
