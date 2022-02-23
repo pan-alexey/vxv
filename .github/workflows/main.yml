@@ -31,12 +31,11 @@ jobs:
         tag_with_ref: true
     # - name: Build image
     #   run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
-    - name: Create SSH key
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_HOSTS }}" > ~/.ssh/known_hosts
-        ssh admin@195.2.93.104
-        whoami
-    - name: Stop the server
-      run: ssh staging 'sudo systemctl stop my-application'
+    - name: executing remote ssh commands using ssh key
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: whoaimi
