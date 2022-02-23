@@ -36,6 +36,7 @@ jobs:
     needs: [build-image]
     name: SSH
     runs-on: self-hosted
+      - name: Artifacts
       - uses: actions/download-artifact@v2
         with:
           name: src
