@@ -5,6 +5,7 @@ on: push
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  CONTAINER: vxv-nodejs
 
 jobs:
   # build:
@@ -19,13 +20,32 @@ jobs:
   build-image:
     runs-on: self-hosted
     steps:
-
+    - name: Check out the repo
+      uses: actions/checkout@v2
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+        tag_with_ref: true
+    # - name: Build image
+    #   run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
-
-
+  ssh-steps:
+    needs: [build-image]
+    name: SSH
+    runs-on: self-hosted
+      - uses: actions/download-artifact@v2
+        with:
+          name: src
+          path: src
+      - name: Create SSH key
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_HOSTS }}" > ~/.ssh/known_hosts
+          ssh admin@195.2.93.104
+          whoami
+      - name: Stop the server
+        run: ssh staging 'sudo systemctl stop my-application'
